@@ -1,6 +1,7 @@
 const { JWT_KEY } = require("../config/serveConfig");
 const UserRepository = require("../repositories/user-repository");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 class UserService {
   constructor() {
@@ -27,6 +28,34 @@ class UserService {
     }
   }
 
+  async signIn(user) {
+    try {
+      console.warn("inside signin : ", user);
+
+      const storedUser = await this.userRepository.getByEmail(user.email);
+      // console.log('user matched: ', user);
+      const passwordMatch = this.checkPassword(
+        user.password,
+        storedUser.password
+      );
+
+      if (!passwordMatch) {
+        console.log("password doesntn't match");
+        throw { error: "password doesn't match" };
+      }
+
+      // in JWT create token it should be a plain JS object, we cannot pass Sequelize object.
+      const newJWT = this.createToken({
+        email: storedUser.email,
+        id: storedUser.id,
+      });
+      return { token: newJWT };
+    } catch (error) {
+      console.log("something went wrong in sign in process");
+      throw error;
+    }
+  }
+
   createToken(user) {
     try {
       const result = jwt.sign({ payload: user }, JWT_KEY, { expiresIn: "1d" });
@@ -43,6 +72,16 @@ class UserService {
       return response;
     } catch (error) {
       console.log("something went wrong in token verification", error);
+      throw error;
+    }
+  }
+
+  checkPassword(userInputPassword, encryptedPassword) {
+    try {
+      // console.log(userInputPassword, " & " ,encryptedPassword)
+      return bcrypt.compareSync(userInputPassword, encryptedPassword);
+    } catch (error) {
+      console.warn("something went wrong in password comoparison, ", error);
       throw error;
     }
   }
