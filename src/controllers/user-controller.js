@@ -17,9 +17,9 @@ const create = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
-      err: error,
-      message: "something went wrong in controllers/Create",
+    res.status(error.statusCode).json({
+      err: error.explanation,
+      message: error.message,
       success: false,
       data: {},
     });

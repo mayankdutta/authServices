@@ -1,3 +1,4 @@
+const ValidationError = require("../utils/validation-error");
 const { User, Role } = require("../models");
 
 class UserRepository {
@@ -6,7 +7,11 @@ class UserRepository {
       const user = await User.create(data);
       return user;
     } catch (error) {
-      console.log("something went wrong in repository layer");
+      if (error.name === "SequelizeValidationError") {
+        // this error is thrown @Service layer, will catch from service layer to improve.
+        throw new ValidationError(error);
+      }
+
       throw error;
     }
   }
@@ -47,18 +52,17 @@ class UserRepository {
 
   async isAdmin(userId) {
     try {
-      const user = await User.findByPk(userId)
-      const adminRole  = await Role.findOne({
+      const user = await User.findByPk(userId);
+      const adminRole = await Role.findOne({
         where: {
-          name: 'ADMIN' 
-        }
-      })
+          name: "ADMIN",
+        },
+      });
       return user.hasRole(adminRole);
     } catch (error) {
       console.warn("something went wrong in isAdmin section");
       throw error;
     }
-
   }
 }
 
