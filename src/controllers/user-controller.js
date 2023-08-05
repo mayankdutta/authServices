@@ -51,18 +51,15 @@ const signIn = async (req, res) => {
 
 const isAuthenticated = async (req, res) => {
   try {
-
-    const token = req.headers['x-access-token'];
+    const token = req.headers["x-access-token"];
     const response = await userService.isAuthenticated(token);
 
     return res.status(200).json({
-      success: true, 
-      err: {}, 
+      success: true,
+      err: {},
       data: response,
-      message: 'successfully, user is authenticated & token is valid'
-    })
-
-
+      message: "successfully, user is authenticated & token is valid",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -74,4 +71,26 @@ const isAuthenticated = async (req, res) => {
   }
 };
 
-module.exports = { create, signIn, isAuthenticated };
+const isAdmin = async (req, res) => {
+  try {
+    const userId = req.body.userId;
+    const response = await userService.isAdmin(userId);
+
+    return res.status(200).json({
+      success: response,
+      err: {},
+      data: response,
+      message: `user is ${response ? "an admin" : "not an admin"}`,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      err: error,
+      message: "something went wrong in controllers/isAdmin",
+      success: false,
+      data: {},
+    });
+  }
+};
+
+module.exports = { create, signIn, isAuthenticated, isAdmin };

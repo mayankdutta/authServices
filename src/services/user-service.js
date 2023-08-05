@@ -68,7 +68,6 @@ class UserService {
         throw { error: "no user with this token exist" };
       }
       return user.id;
-
     } catch (error) {
       console.log("something went wrong during verification of token");
       throw error;
@@ -101,6 +100,16 @@ class UserService {
       return bcrypt.compareSync(userInputPassword, encryptedPassword);
     } catch (error) {
       console.warn("something went wrong in password comoparison, ", error);
+      throw error;
+    }
+  }
+
+  async isAdmin(userId) {
+    try {
+      const response = await this.userRepository.isAdmin(userId);
+      return response;
+    } catch (error) {
+      console.warn("something went wrong in isAdmin section");
       throw error;
     }
   }
