@@ -55,6 +55,10 @@ class UserService {
       });
       return { token: newJWT };
     } catch (error) {
+
+      if (error.name === 'AttributeNotFound') {
+        throw error;
+      }
       console.log("something went wrong in sign in process");
       throw error;
     }

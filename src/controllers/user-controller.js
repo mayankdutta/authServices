@@ -39,10 +39,9 @@ const signIn = async (req, res) => {
       message: "user created successfully",
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      err: error,
-      message: "something went wrong in controllers/sign In",
+    res.status(error.statusCode).json({
+      err: error.explanation,
+      message: error.message,
       success: false,
       data: {},
     });
