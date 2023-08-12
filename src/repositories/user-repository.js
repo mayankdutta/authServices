@@ -13,7 +13,6 @@ class UserRepository {
         // this error is thrown @Service layer, will catch from service layer to improve.
         throw new ValidationError(error);
       }
-
       throw error;
     }
   }
@@ -56,8 +55,6 @@ class UserRepository {
       }
       return user;
     } catch (error) {
-      console.log("######### printing the error ##########");
-      console.log(error);
       console.log("something went wrong in repository layer");
       throw error;
     }
