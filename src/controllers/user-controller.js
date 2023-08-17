@@ -72,8 +72,8 @@ const isAuthenticated = async (req, res) => {
 
 const isAdmin = async (req, res) => {
   try {
-    const userId = req.body.userId;
-    const response = await userService.isAdmin(userId);
+    const userEmail = req.body.userEmail;
+    const response = await userService.isAdmin(userEmail);
 
     return res.status(200).json({
       success: response,
@@ -92,4 +92,27 @@ const isAdmin = async (req, res) => {
   }
 };
 
-module.exports = { create, signIn, isAuthenticated, isAdmin };
+const toRole = async (req, res) => {
+  try {
+    const userEmail = req.body.userEmail;
+    const role = req.body.role;
+
+    const response = await userService.toRole(userEmail, role);
+    return res.status(200).json({
+      success: response,
+      err: {},
+      data: response,
+      message: `user is promoted/demoted to ${role || "admin"}`,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      err: error,
+      message: "something went wrong in controllers/toRole",
+      success: false,
+      data: {},
+    });
+  }
+};
+
+module.exports = { create, signIn, isAuthenticated, isAdmin, toRole };

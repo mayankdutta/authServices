@@ -11,7 +11,8 @@ const validateUserAuth = (req, res, next) => {
 };
 
 const validateIsAdminRequest = (req, res, next) => {
-  if (!req.body.userId) {
+  // console.log('req.body: ', req.body);
+  if (!req.body.userEmail) {
     return res.status(400).json({
       success: false,
       data: {},

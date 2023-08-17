@@ -112,12 +112,22 @@ class UserService {
     }
   }
 
-  async isAdmin(userId) {
+  async isAdmin(userEmail) {
     try {
-      const response = await this.userRepository.isAdmin(userId);
+      const response = await this.userRepository.isAdmin(userEmail);
       return response;
     } catch (error) {
       console.warn("something went wrong in isAdmin section");
+      throw error;
+    }
+  }
+
+  async toRole(userEmail, role) {
+    try {
+      const response = await this.userRepository.toRole(userEmail, role);
+      return response;
+    } catch (error) {
+      console.warn("something went wrong in isRole section");
       throw error;
     }
   }

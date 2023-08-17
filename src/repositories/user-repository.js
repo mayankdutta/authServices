@@ -60,17 +60,50 @@ class UserRepository {
     }
   }
 
-  async isAdmin(userId) {
+  async isAdmin(userEmail) {
     try {
-      const user = await User.findByPk(userId);
+      const user = await User.findOne({
+        where: {
+          email: userEmail,
+        },
+      });
+
+      // const user = await User.findByPk(userId);
       const adminRole = await Role.findOne({
         where: {
           name: "ADMIN",
         },
       });
+
       return user.hasRole(adminRole);
     } catch (error) {
       console.warn("something went wrong in isAdmin section");
+      throw error;
+    }
+  }
+
+  async toRole(userEmail, role = "ADMIN") {
+    console.log('user email: ', userEmail, ' & role: ', role);
+    try {
+      const user = await User.findOne({
+        where: {
+          email: userEmail,
+        },
+      });
+
+      console.log('user : ', user);
+
+      const roleObj = await Role.findOne({
+        where: {
+          name: role,
+        },
+      });
+
+      console.log('roleObj : ', roleObj);
+
+      return user.addRole(roleObj);
+    } catch (error) {
+      console.warn("something went wrong in toRole section");
       throw error;
     }
   }
